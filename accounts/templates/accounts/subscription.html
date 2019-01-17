@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Subscription
+{% endblock %}
+{% load staticfiles %}
+
+{% block content %}
+{% include 'graph/nav.html' %}  
+    <head>
+        <link rel="stylesheet" href="{% static '/accounts/subscriptioncss.css' %}">
+    </head>
+
+    {% if user.is_authenticated %}
+
+    <div class='container-fluid'>
+        <div class="row">
+            <div class="col instacol">
+                <h3>Subscription Info:</h3>
+                <p><span class="userinfo"> Account:</span> {{ user.username }}</p>
+                {% if instainfo != None %}
+                    <p><span class="userinfo">Instagram Username:</span> {{ instainfo.instauser }}</p>
+                {% else %}
+                    <p><a href="/graph/editaccount">Please Follow the steps before activating the subscription</a></p>
+                {% endif %}
+                {% if instapref != None %}
+                    <p><span class="userinfo">Preferences: </span> Complete</p>
+                {% else %}
+                    <p><a href="/graph/editpreferences">Please Follow the steps before activating the subscription</a></p>
+                {% endif %}
+                {% if sub != None %}
+                    <p><span class="userinfo">Active Subscription:</span> {{ sub.active|yesno:"Yes,No" }}</p>
+                    <p><span class="userinfo">Subscription Start Date:</span> {{ sub.substart }}</p>
+                    <p><span class="userinfo">Subscription End Date:</span> {{ sub.subend }}</p>
+                    
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class='container-fluid'>
+        <div class="row">
+            <div class="col instacol">
+                {% if instainfo != None or instapref != None %}
+                    {% if sub.active == True %}
+                        <h3>End Subscription</h3>
+                        
+                        <p>To cancel, please follow<a href="https://www.paypal.com/us/home"> this link </a>to log into your Paypal account. </p>
+                        <p>In the Activity tab, click on your most recent transaction with us and in the invoice, click the link "View Recurring Payment Details" and cancel.</p>
+                        <p>Our services will be available until subscription end date</p>
+
+                        <h3>Immediately stop services</h3>
+                        <p>For whatever reason, if you need to immediately stop running the program, you can change your Instagram password so we no longer have access. </p>
+                        <p>**Note - To avoid being charged the subscription fee, you need to cancel via Paypal </p>
+                    {% else %}
+                        <h3>Start Subscription</h3>
+                        <p>Please Continue by clicking on the Paypal Button. This will take you away from the site where you will log into your paypal account. </p>
+                        <p> We do not save any payment information.</p>
+                        <p> $9.99 per month. The subscription will renew every month and you will be charged. 
+                            To cancel, please log in to your paypal account and cancel the subscription. </p>
+                        <p> Regardless of when you cancel your subscription, you will have access to our service until the specified end date.  </p>
+                        <form action="." method="post">
+                            {% csrf_token %}
+                            <input type="submit" name="action" value="Start Sub Via Paypal">
+                        </form>
+                    {% endif %}
+                {% else %}
+                        <h3>Please fill out the account form and subscription form before starting your subscription</h3>
+                {% endif %}
+            </div>
+
+        </div>
+    </div>
+
+  
+    {% else %}
+        <meta http-equiv="REFRESH" content="0;url=/accounts/signup">
+    {% endif %}
+
+{% endblock %}

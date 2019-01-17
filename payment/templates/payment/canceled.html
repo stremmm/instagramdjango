@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %} Payment Canceled {% endblock %}
+{% load staticfiles %}
+
+{% block content %}
+{% include 'graph/nav.html' %}  
+
+    <head>
+        <link rel="stylesheet" href="{% static '/accounts/subscriptioncss.css' %}">
+    </head>
+    {% if user.is_authenticated %}
+        <h3>Your payment has not been processed</h3>
+        <p>There was a problem processing your payment</p>>
+    {% else %}
+        <meta http-equiv="REFRESH" content="0;url=/accounts/signup">
+    {% endif %}
+
+{% endblock %}

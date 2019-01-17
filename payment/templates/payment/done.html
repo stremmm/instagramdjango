@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %} Paypal process Complete {% endblock %}
+{% load staticfiles %}
+
+{% block content %}
+{% include 'graph/nav.html' %}  
+
+    <head>
+        <link rel="stylesheet" href="{% static '/accounts/subscriptioncss.css' %}">
+    </head>
+    {% if user.is_authenticated %}
+        <h3>Your payment was successful</h3>
+        
+        <p>Your payment was successfully received. </p>
+        <p> Please wait a few moments for your subscription to be approved.</p><a href="/accounts/subscription"> Click here to manage your subscription:</a></p>>
+    {% else %}
+        <meta http-equiv="REFRESH" content="0;url=/accounts/signup">
+    {% endif %}
+
+{% endblock %}

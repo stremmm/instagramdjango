@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Edit Instagram Account Info
+{% endblock %}
+{% load staticfiles %}
+
+{% block content %}
+{% include 'graph/nav.html' %}  
+
+    <head>
+        <link rel="stylesheet" href="{% static '/graph/editaccountcss.css' %}">
+    </head>
+    {% if user.is_authenticated %}
+        
+
+        <div class='container-fluid'>
+            <div class="row">
+                <div class="col instacol">
+                    <h3>Current Info: </h3>
+                    <p><span class="userinfo">Account Email: </span><span>{{user.email }}</span></p>
+                    <p><span class="userinfo">Account Username: </span><span>{{user.username}}</span></p>
+                    {% if info != None %}
+                        <p><span class="userinfo">Instagram Username: </span><span>{{info.instauser}}</span></p>
+                        <p><span class="userinfo">Instagram Password: </span><span>{{info.instapass}}</span></p>
+                        <p><span class="userinfo">Instagram API Client ID:</span><span> {{info.clientid}}</span></p>
+                        <p><span class="userinfo">Instagram API Access Token: </span><span>{{info.accesstoken}}</span></p>
+                    {% endif %}
+                </div>
+                <div class="col instacol">
+                    <h3>Edit Instagram Account Info:</h3>
+                    <form method='post'>
+                        {% csrf_token %}
+                        {% for field in form %}
+                            <p>
+                                {{ field.errors }}
+                                {{ field }}
+                            </p>
+                        {% endfor %}
+                        <button type='submit'> Update Instagram Account</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col instacol">
+                    <h3>How to Fill Out Form:</h3>
+                    <p><span class="userinfo">Instagram Username: </span><span>The Username you use to log into instagram </span></p>
+                    <p><span class="userinfo">Instagram Password: </span><span>The Password you use to log into instagram </span></p>
+                    <p><span class="userinfo">Instagram API Client ID: </span><span>Required to communicate with Instagram API. 
+                        Follow the instructions on this  <a href="https://elfsight.com/blog/2016/05/how-to-get-instagram-access-token/"><b> blog post</b></a></span></p>
+                    <p><span class="userinfo">Instagram Access Token: </span><span>Required to communicate with Instagram API. Once you have your Client ID, 
+                        use <a href="https://elfsight.com/service/generate-instagram-access-token/"><b>this site</b></a> to generate the access token.</span></p>
+                </div>
+            </div>
+        </div>
+
+ 
+    {% else %}
+        <meta http-equiv="REFRESH" content="0;url=/accounts/signup">
+    {% endif %}
+
+
+
+
+{% endblock %}

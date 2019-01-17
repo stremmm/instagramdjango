@@ -1,0 +1,340 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Instagram Detail
+{% endblock %}
+{% load staticfiles %}
+
+<script>
+    {% block jquery %}
+        var feed = 'graph/api/feeddata'
+        var endpoint = 'graph/api/historydata' 
+        $.ajax({
+            method:"GET",
+            url: feed,
+            success: function(data){
+                var feedData = {
+                    username: [],
+                    link: [],
+                    date: [],
+                }
+                var len = data.heartdata.length
+
+                for (var i = 0; i < len; i++){
+                    feedData.username.push(data.heartdata[i].username);
+                    feedData.link.push(data.heartdata[i].link);
+                    var dateFull = data.heartdata[i].date
+                    var dateShort = dateFull.split('T')
+                    feedData.date.push(dateShort[0]);
+                }
+                console.log(feedData)
+
+                console.log(data.heartdata)
+                $('#feed-table').dynatable({
+                    dataset: {
+                        records: data.heartdata
+                    }
+                });
+            },
+            error: function(error_data){
+                console.log('error')
+                console.log(error_data)
+            }
+        });
+
+
+    
+        $.ajax({
+            method: "GET",
+            url: endpoint,
+            success: function(data){
+
+                 var followData = {
+                    followers : [],
+                    follows : [],
+                    uploads : [],
+                    date : [],
+                }
+                var len = data.followerdata.length
+
+                for (var i = 0; i < len; i++){
+                    followData.followers.push(data.followerdata[i].totalfollowers);
+                    followData.follows.push(data.followerdata[i].totalfollows);
+                    followData.uploads.push(data.followerdata[i].uploads);
+                    followData.date.push(data.followerdata[i].date);
+                }
+                console.log(followData)
+
+                chart(followData)
+                console.log("working no error")
+                //console.log(data.followerdata)
+
+               
+
+            },
+            error: function(error_data){
+                console.log("error")
+                console.log(error_data)
+            }
+        })
+
+        function chart(followData){
+            var ctx = document.getElementById("myChart").getContext('2d');
+            var ctx2 = document.getElementById("myChart2").getContext('2d');
+            var ctx3 = document.getElementById("myChart3").getContext('2d');
+
+            
+            var myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: followData.date,
+                    datasets: [{
+                        label: '# of Uploads',
+                        data: followData.uploads,
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+
+                        ],
+                        borderColor: [
+                            'rgba(255,99,132,1)',
+
+                        ],
+                        borderWidth: 1
+
+                    }]
+                },
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero:true
+                            }
+                        }]
+                    }
+                }
+            });
+            var myChart = new Chart(ctx2, {
+                type: 'line',
+                data: {
+                    labels: followData.date,
+                    datasets: [{
+                        label: '# of Followers',
+                        data: followData.followers,
+                        backgroundColor: [
+                            'rgb(255, 99, 132, 0.2)',
+
+                        ],
+                        borderColor: [
+                            'rgba(255,99,132,1)',
+
+                        ],
+                        borderWidth: 1
+
+                    }]
+                },
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero:true
+                            }
+                        }]
+                    }
+                }
+            });
+            var myChart = new Chart(ctx3, {
+                type: 'line',
+                data: {
+                    labels: followData.date,
+                    datasets: [{
+                        label: '# of Follows',
+                        data: followData.follows,
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+
+                        ],
+                        borderColor: [
+                            'rgba(255,99,132,1)',
+
+                        ],
+                        borderWidth: 1
+
+                    }]
+                },
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero:true
+                            }
+                        }]
+                    }
+                }
+            });
+        }
+
+
+    {% endblock %}
+</script>
+
+
+
+{% block content %}
+{% include 'graph/nav.html' %}  
+<head>
+    <link rel="stylesheet" href="{% static '/graph/detailcss.css' %}">
+</head>
+
+    {% if user.is_authenticated %} 
+        
+
+        {% if dataGeneral != None and dataRecent != None %}
+
+            <div class="container-fluid username">
+                <div class="row fix-font">
+                    <div class="col">
+                        <h3>Username: {{ dataGeneral.username }}</h3>  
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="container-fluid" >  
+                <div class="row fix-font instacounts" >  
+                    <div class="col" >
+                        <h5>Uploads: </h5>
+                        <h3>{{ dataGeneral.counts.media }}</h3>
+                    </div>    
+                    <div class="col">
+                        <h5>Followers: </h5>
+                        <h3> {{ dataGeneral.counts.followed_by }}</h3>
+                    </div>
+                    <div  class="col">
+                        <h5>Follows: </h5>
+                        <h3>{{ dataGeneral.counts.follows }}</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <canvas id="myChart"></canvas>
+                    </div>
+                    <div class="col-sm-4">
+                            <canvas id="myChart2" ></canvas>
+                    </div>
+                    <div class="col-sm-4">
+                        <canvas id="myChart3" ></canvas>
+                        <p class="graphnotice">* Graphs update daily</p>
+                    </div>
+                </div>    
+            </div>
+
+            
+
+            <div class="container-fluid">  
+                <div class="row">    
+                        <div class="col"> 
+                            {% if dataGeneral.profile_picture %}
+                            <img class="img-fluid" style="max-height: 300px;" src="{{ dataGeneral.profile_picture }}">   
+                            {% endif %}   
+                        </div>
+                        <div class="col scroll fix-font" >
+                            {% if dataGeneral.full_name %}
+                            <p><span class="userinfo">Full Name: </span><span>{{ dataGeneral.full_name }}</span></p>
+                            {% endif %}
+                            {% if dataGeneral.bio %}
+                            <p><span class="userinfo">Bio: </span><span>{{ dataGeneral.bio }}</span></p>
+                            {% endif %}
+                            {% if dataGeneral.website %}
+                            <p><span class="userinfo">website:</span><span> {{ dataGeneral.website }}</span></p>
+                            {% endif %}
+                            {% if dataGeneral.is_business %}
+                            <p><span class="userinfo">Business:</span><span> {{ dataGeneral.is_business }}</span></p>
+                            {% endif %}
+                            <p><span class="userinfo">ID: </span><span>{{ dataGeneral.id }}</span></p>
+                            
+                        </div>
+                        <div class="col">
+                            {% if dataRecent.images.standard_resolution.url %}
+                            <img class="img-fluid" style="max-height: 300px;" src="{{ dataRecent.images.standard_resolution.url }}">  
+                            {% endif %}   
+                        </div>
+                        <div class="col scroll fix-font">
+                            {% if dataRecent.link %}
+                            <p><span class="userinfo">Link: </span><span><a href="{{ dataRecent.link }}">{{ dataRecent.link }}</a></span></p>
+                            {% endif %}
+                            {% if dataRecentTime2 %}
+                            <p><span class="userinfo">Created time: </span><span>{{ dataRecentTime2|date:"DATETIME_FORMAT" }}</span></p>
+                            {% endif %}
+                            {% if dataRecent.caption.text %}
+                            <p><span class="userinfo">Caption: </span><span>{{ dataRecent.caption.text }}</span></p>
+                            {% endif %}
+                            {% if dataRecent.likes.count %}
+                            <p><span class="userinfo">Likes:</span><span> {{ dataRecent.likes.count }}</span></p>
+                            {% endif %}
+                            {% if dataRecent.comment.count %}
+                            <p><span class="userinfo">Comments:</span><span> {{ dataRecent.comments.count}}</span></p>
+                            {% endif %}
+                            {% if dataRecent.tags %}
+                            <p><span class="userinfo">Tags: </span><span>{{ dataRecent.tags }}</span></p>
+                            {% endif %}
+                            {% if dataRecent.type %}
+                            <p><span class="userinfo">Type:</span><span> {{ dataRecent.type }}</span> </p>
+                            {% endif %}
+                            {% if dataRecent.location %}
+                            <p><span class="userinfo"> Location:</span><span> {{dataRecent.location }}</span></p>
+                            {% endif %}
+                            <p><span class="userinfo"> Time Difference:</span><span> {{ uploadTimeDifferenceFormat }}</span></p>
+
+                        </div>
+                    </div> 
+                </div>
+            </div>
+        {% else %}
+            <div class="container-fluid">
+                <h3>Please Fill out Instagram Account and Preferences located in the above tabs to access Dashboard</h3>
+            </div>    
+        {% endif %}
+
+        
+        {% if info != None %}
+        <div class="container">
+            
+            <div class="row">
+
+                <div class="col scrollTable">
+                    <h3 class='fix-font likedmediaheader'>Recent Liked Media:</h3>
+
+                    <table id="feed-table">
+                        <thead class='tablehead'>
+                            <th class="heading">Username</th>
+                            <th class="heading">Link</th>
+                            <th class="heading">Date</th>
+                        </thead>
+                        
+                        <tbody class='tablebody'>
+                        
+
+                        </tbody>
+                    </table>
+
+                    <form action="{% url 'graph:deletehistory_view' info.accountuser %}" method="post">
+                        {% csrf_token %}
+                        <input type="submit" name="action" value="Delete History">
+                    </form>
+                    
+
+                </div>
+            </div>
+        </div>
+        {% endif %}
+            
+
+        
+    {% else %}
+        
+        <meta http-equiv="REFRESH" content="0;url=/accounts/signup">
+    {% endif %}
+
+{% endblock %}

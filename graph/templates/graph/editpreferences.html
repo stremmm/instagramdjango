@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Edit Instagram Preferences
+{% endblock %}
+{% load staticfiles %}
+
+{% block content %}
+{% include 'graph/nav.html' %}  
+
+    <head>
+        <link rel="stylesheet" href="{% static '/graph/editpreferencescss.css' %}">
+    </head>
+    {% if user.is_authenticated %}
+        
+
+        <div class='container-fluid'>
+            <div class="row">
+                <div class="col instacol">
+                    <h3>Current Info: </h3>
+                    <p><span class="userinfo">Account Email: </span><span>{{user.email }}</span></p>
+                    <p><span class="userinfo">Account Username: </span><span>{{user.username}}</span></p>
+                    {% if info != None %}
+                        <p><span class="userinfo">Likes Per Hour: </span><span>{{info.likesperhour}}</span></p>
+                        <p><span class="userinfo">Consecutive Hours: </span><span>{{info.consecutivehours}}</span></p>
+                        <p><span class="userinfo">Likes Per Day: </span><span> {{info.likesperday}}</span></p>
+                        <p><span class="userinfo">Minimum Posts: </span><span>{{info.minposts}}</span></p>
+                        <p><span class="userinfo">Maximum Followers: </span><span>{{info.maxfollowers}}</span></p>
+                        <p><span class="userinfo">Minimum Follows:  </span><span>{{info.minfollowers}}</span></p>
+                        <p><span class="userinfo">Enforce Clarifai AI: </span><span>{{info.enforceclarifai|yesno:"Yes,No"}}</span></p>
+                        <p><span class="userinfo">Enforce Banned List: </span><span>{{info.enforcebanned|yesno:"Yes,No"}}</span></p>
+                        <p><span class="userinfo">Categories: </span><span>{% for list in info.subscribedcategories %}{{list}}{% endfor %}</span></p>
+                    {% endif %}
+                </div>
+                <div class="col instacol">
+                    <h3>Edit Instagram Preferences: </h3>
+                    <form method='post'>
+                        {% csrf_token %}
+                        {% for field in form %}
+                            <p>
+                                {{ field.errors }}
+                                {{ field.label }}
+                                {{ field }}
+                            </p>
+                        {% endfor %}
+                        <button type='submit'>  Update Instagram Preferences</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col instacol">
+                    <h3>How to Fill Out Form:</h3>
+                    <p><span class="userinfo">Likes Per Hour: </span><span>Amount of likes generated from your
+                         Instagram account per hour (Max 350/hour to avoid receiving a flag/ban for spam) </span></p>
+                    <p><span class="userinfo">Consecutive Hours: </span><span>Number of hours to run (Max 24 hours) </span></p>
+                    <p><span class="userinfo">Likes Per Day: </span><span>Maximum likes per day. 
+                        Will not exceed this amount even if Likes Per Hour and Consecutive Hours exceeds this (Max 450/day) </span></p>
+                    <p><span class="userinfo">Minimum Posts: </span><span>When looking at another 
+                        Instagram profile, the user must post more than this specified number (Max 50 uploads. Implemented to avoid wasting likes on fake/inactive profiles)</span></p>
+                    <p><span class="userinfo">Maximum Followers </span><span>When looking at another Instagram profile, 
+                        the user must have less than the specified followers (Max 10,000 followers. Implemented to avoid wasting l
+                        ikes on users who are unlikely to reciprocate because their follow count is too high) </span></p>
+                    <p><span class="userinfo">Minimum Follows </span><span>When looking at another Instagram profile, 
+                        the user must follow more profiles than the amount specified (Min 1. Implemented to avoid liking 
+                        people that don't follow people back.</span></p>    
+                    <p><span class="userinfo">Run Clarifai: </span><span><a href="https://clarifai.com/"><b>Clarifai</b></a> uses machine learning on images. 
+                        In our use case, before liking a picture, we use Clarifai's API to make sure the image is Safe For Work (No nudity)  </span></p>
+                    <p><span class="userinfo">Enforce Banned Hashtags: </span><span>Scrape the picture's caption and comments for specific 
+                        words that should generally be avoided (includes NSFW hashtags, racial, religious, political views, drugs and illegal activities)  </span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="container-fluid">
+                <div class="row">
+                    <div class="col instacol">
+                        <h3>Categories: </h3>
+                        <p class="userinfo">Top Hashtags in each specific Category</p>
+                        <p>**Note on Banned Hashtags and Comments: We aren't banning specific words because we 
+                            disagree with their values or movement. By banning these words, we make sure that people don't use these hashtags to spread hate in favor of the represented group or against them. </p>
+                        {% for x in getcategories %}
+                            <p><span class="userinfo">{{x.catname}}:</span><span> {% for y in x.catarray %} {{ y }}{% endfor %}</span></p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+    
+
+
+
+ 
+    {% else %}
+        <meta http-equiv="REFRESH" content="0;url=/accounts/signup">
+    {% endif %}
+{% endblock %}

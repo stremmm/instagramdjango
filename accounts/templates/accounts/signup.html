@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Sign Up
+{% endblock %}
+{% load staticfiles %}
+
+{% block content %}
+    <head>
+        <link rel="stylesheet" href="{% static '/accounts/signupcss.css' %}">
+    </head>
+    {% if user.is_authenticated %}
+        <p>Please sign out of {{user.username}} to create a new account <a class="nav-link" href="/accounts/logout">Logout</a></p>
+    {% else %}
+    
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col">
+                <h3>Image goes here</h3>
+            </div>
+            <div class="col colform">
+                <div class="container col-md-8">
+                <h3>Sign Up</h3>
+                <form method='post'>
+                    {% csrf_token %}
+                    {% for field in form %}
+                        {{field.errors}}
+                        <p>
+                            
+                            {{field}}
+                        </p>
+                    {% endfor %}
+                    <button type="submit">Sign Up</button>
+
+                </form>
+                <p class="signin">Already have an account? <a href="/accounts/login">Sign In</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+        
+    {% endif %}
+
+{% endblock %}

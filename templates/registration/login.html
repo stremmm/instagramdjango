@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Login
+{% endblock %}
+{% load staticfiles %}
+
+{% block content %}
+    <head>
+        <link rel="stylesheet" href="{% static 'accounts/logincss.css' %}">
+    </head>
+    {% if user.is_authenticated %}
+        <p>Please sign out of {{user.username}} to create a new account <a class="nav-link" href="/accounts/logout">Logout</a></p>
+    {% else %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col">
+                <div class="container col-md-4">
+                <h3>Login</h3>
+                <form method="post">
+                    {% csrf_token %}
+                    {{form.as_p}}
+                    <button type="submit">Login</button>
+                </form>
+                <p class="signup">Don't have an account? <a href="/">Sign Up</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,121 @@
+body {
+    height: 100%;
+    width: 100%;
+    overflow-x: hidden;
+    background-color: #333333
+
+}
+
+.container-fluid  {
+    padding: 20px;
+}
+
+span, h3{
+    color: white;
+}
+
+.container {
+    padding: 20px;
+}
+
+.username {
+    border-top: 2px solid;
+    border-top-color: black;
+    text-align: center;
+}
+
+.instacounts{
+    text-align: center;
+}
+
+.instacounts div {
+    border: 2px solid;
+    border-color: #FF6384;
+}
+
+.graphnotice {
+    color: gray;
+}
+
+.scroll {
+    height: 300px;
+    overflow-y: scroll;
+    min-width: 200px;
+}
+
+.scrollTable {
+    height: 300px;
+    overflow-y: scroll;
+}
+
+.img-fluid {
+    min-width: 200px;;
+}
+
+.userinfo {
+    color: #FF6384;
+}
+
+a:link {
+    color: white;
+  }
+  
+  /* visited link */
+  a:visited {
+    color: white;
+  }
+  
+  /* mouse over link */
+  a:hover {
+    color: white;
+  }
+  
+  /* selected link */
+  a:active {
+    color: white;
+  }
+
+.heading {
+    padding-left: 150px;
+    padding-right: 150px;
+    background-color: #FF6384;
+}
+
+
+.tablebody tr td {
+    text-align: center;
+    color: white;
+    
+}
+
+.fix-font {
+    color: white;
+}
+
+.likedmediaheader {
+    text-align: center;
+}
+
+.dynatable-active-page {
+    background-color: #FF6384;
+}
+
+/* width */
+::-webkit-scrollbar {
+    width: 10px;
+  }
+  
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: #333333;
+  }
+   
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: grey;
+  }
+  
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: grey;
+  }

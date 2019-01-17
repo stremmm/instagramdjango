@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>{% block title %} Instagram {% endblock %}</title>
+
+        {% include 'css.html' %}
+    </head>
+    <body>
+
+        {% block content %}
+        {% endblock %}
+        {% include 'js.html' %}
+        <script>
+        $(document).ready(function() {
+            {% block jquery %}{% endblock %}
+        })
+        </script>
+
+    </body>
+
+
+
+
+</html>
