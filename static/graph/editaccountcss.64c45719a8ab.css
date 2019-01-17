@@ -1,0 +1,49 @@
+body {
+    height: 100%;
+    width: 100%;
+    overflow-x: hidden;
+    background-color: #333333;
+
+}
+
+p, h3 {
+    color: white;
+}
+
+.userinfo {
+    color: #FF6384;
+}
+
+.instacol {
+    border-top: 2px solid black;
+    border-right: 2px solid black;
+    padding: 10px;
+    padding-left: 20px;
+
+}
+
+#id_instauser, #id_instapass, #id_clientid, #id_accesstoken {
+    width: 600px;
+
+}
+
+
+
+a:link {
+    color: white;
+}
+
+/* visited link */
+a:visited {
+    color: white;
+}
+
+/* mouse over link */
+a:hover {
+    color: white;
+}
+
+/* selected link */
+a:active {
+    color: white;
+}
